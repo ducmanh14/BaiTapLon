@@ -75,7 +75,7 @@ class DetailsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  "${food.price - (food.price * (food.discount) / 100)}00₫",
+                                  "${food.price - (food.price * (food.discount) / 100).round()}.000₫",
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

@@ -4,6 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_app/screens/auth/blocs/sing_in_bloc/sign_in_bloc.dart';
 import 'package:food_app/screens/home/blocs/get_food_bloc/get_food_bloc.dart';
 import 'package:food_app/screens/home/views/details_screen.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/cart_provider.dart';
+import '../../cart/cart_screen.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,16 +20,54 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
         title: Row(
           children: [
-            Image.asset('assets/logo.png', scale: 14),
+            Image.asset('assets/logo1.png', scale: 6),
             const SizedBox(width: 8),
             const Text(
-              'FAST FOOD',
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 30),
+              'Buger Queen',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 27),
             )
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.cart)),
+          Consumer<CartProvider>(
+            builder: (context, cart, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.shopping_cart_outlined),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CartScreen()),
+                      );
+                    },
+                  ),
+                  if (cart.totalItems > 0)
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          cart.totalItems.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+
           IconButton(
               onPressed: () {
                 context.read<SignInBloc>().add(SignOutRequired());
@@ -138,7 +180,7 @@ class HomeScreen extends StatelessWidget {
                                     Row(
                                       children: [
                                         Text(
-                                          "${state.foods[i].price - (state.foods[i].price * (state.foods[i].discount) / 100)}00₫",
+                                          "${state.foods[i].price - (state.foods[i].price * (state.foods[i].discount) / 100).round()}.000₫",
                                           style: TextStyle(
                                               fontSize: 18,
                                               color: Theme.of(context).colorScheme.primary,
@@ -147,7 +189,20 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.add_circled_solid))
+                                    IconButton(
+                                      onPressed: () {
+                                        final item = {
+                                          "name": state.foods[i].name,
+                                          "price": (state.foods[i].price -
+                                              (state.foods[i].price * (state.foods[i].discount / 100))).round(),
+                                        };
+
+                                        // Thêm vào giỏ hàng
+                                        context.read<CartProvider>().addToCart(item);
+
+                                      },
+                                      icon: const Icon(CupertinoIcons.add_circled_solid),
+                                    ),
                                   ],
                                 )
                             ),
