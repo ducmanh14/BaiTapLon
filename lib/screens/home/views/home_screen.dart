@@ -7,22 +7,27 @@ import 'package:food_app/screens/home/views/details_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/cart_provider.dart';
 import '../../cart/cart_screen.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'add_food_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    const adminEmail = 'admin@gmail.com';
+    final isAdmin = user?.email == adminEmail;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         title: Row(
           children: [
-            Image.asset('assets/logo1.png', scale: 6),
-            const SizedBox(width: 8),
-            const Text(
+            Image.asset('assets/logo1.png', scale: 6.5),
+             SizedBox(width: 0),
+             Text(
               'Buger Queen',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 27),
             )
@@ -67,21 +72,35 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
-
           IconButton(
               onPressed: () {
                 context.read<SignInBloc>().add(SignOutRequired());
               },
               icon: const Icon(CupertinoIcons.arrow_right_to_line)),
+          if (isAdmin)
+            IconButton(
+              icon: const Icon(Icons.add_circle_outline),
+              tooltip: 'Thêm món ăn mới',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddFoodScreen()),
+                );
+              },
+            ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<GetFoodBloc, GetFoodState>(
           builder: (context, state) {
-            if(state is GetFoodSuccess) {
+            if (state is GetFoodSuccess) {
               return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 16, mainAxisSpacing: 16, childAspectRatio: 9 / 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 9 / 16),
                   itemCount: state.foods.length,
                   itemBuilder: (context, int i) {
                     return Material(
@@ -96,16 +115,17 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute<void>(
-                              builder: (BuildContext context) => DetailsScreen(
-                                  state.foods[i]
-                              ),
+                              builder: (BuildContext context) =>
+                                  DetailsScreen(state.foods[i]),
                             ),
                           );
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 18,),
+                            SizedBox(
+                              height: 18,
+                            ),
                             Image.asset(state.foods[i].picture),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -116,38 +136,47 @@ class HomeScreen extends StatelessWidget {
                                         color: state.foods[i].isVeg
                                             ? Colors.green
                                             : Colors.red,
-                                        borderRadius: BorderRadius.circular(30)
-                                    ),
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 8),
                                       child: Text(
                                         state.foods[i].isVeg
                                             ? "🥬 VEG"
                                             : "NON-VEG",
-                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10),
                                       ),
                                     ),
                                   ),
-                                   SizedBox(width: 10,),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
                                   Container(
-                                    decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(30)),
+                                    decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.2),
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
                                     child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 8),
                                       child: Text(
-                                        state.foods[i].spicy == 1
-                                            ? "🌶️ BLAND"
-                                            : state.foods[i].spicy == 2
-                                            ? "🌶️ BALANCE"
-                                            : "🌶️ SPICY",
+                                        state.foods[i].spicy == 0
+                                            ? " BLAND"
+                                            : state.foods[i].spicy == 1
+                                                ? "🌶️ BALANCE"
+                                                : "🌶️ SPICY",
                                         style: TextStyle(
-                                            color: state.foods[i].spicy == 1
+                                            color: state.foods[i].spicy == 0
                                                 ? Colors.green
-                                                : state.foods[i].spicy == 2
-                                                ? Colors.orange
-                                                : Colors.redAccent,
+                                                : state.foods[i].spicy == 1
+                                                    ? Colors.orange
+                                                    : Colors.redAccent,
                                             fontWeight: FontWeight.w800,
-                                            fontSize: 10
-                                        ),
+                                            fontSize: 10),
                                       ),
                                     ),
                                   )
@@ -156,14 +185,17 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text(
                                 state.foods[i].name,
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Text(
                                 state.foods[i].description,
                                 style: TextStyle(
@@ -175,7 +207,8 @@ class HomeScreen extends StatelessWidget {
                             Padding(
                                 padding: EdgeInsets.only(left: 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -183,9 +216,10 @@ class HomeScreen extends StatelessWidget {
                                           "${state.foods[i].price - (state.foods[i].price * (state.foods[i].discount) / 100).round()}.000₫",
                                           style: TextStyle(
                                               fontSize: 18,
-                                              color: Theme.of(context).colorScheme.primary,
-                                              fontWeight: FontWeight.w700
-                                          ),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontWeight: FontWeight.w700),
                                         ),
                                       ],
                                     ),
@@ -194,20 +228,24 @@ class HomeScreen extends StatelessWidget {
                                         final item = {
                                           "name": state.foods[i].name,
                                           "price": (state.foods[i].price -
-                                              (state.foods[i].price * (state.foods[i].discount / 100))).round(),
+                                                  (state.foods[i].price *
+                                                      (state.foods[i].discount /
+                                                          100)))
+                                              .round(),
                                         };
 
                                         // Thêm vào giỏ hàng
-                                        context.read<CartProvider>().addToCart(item);
-
+                                        context
+                                            .read<CartProvider>()
+                                            .addToCart(item);
                                       },
-                                      icon: const Icon(CupertinoIcons.add_circled_solid),
+                                      icon: const Icon(
+                                          CupertinoIcons.add_circled_solid),
                                     ),
                                   ],
-                                )
-                            ),
+                                )),
                             Padding(
-                                padding: EdgeInsets.only(left: 10),
+                              padding: EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
                                   Transform(
@@ -219,7 +257,9 @@ class HomeScreen extends StatelessWidget {
                                       color: Colors.blue.shade400,
                                     ),
                                   ),
-                                  SizedBox(width: 5,),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
                                   Text(
                                     "${state.foods[i].price}.000₫",
                                     style: TextStyle(
@@ -236,17 +276,14 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     );
-                  }
-              );
-            } else if(state is GetFoodLoading) {
+                  });
+            } else if (state is GetFoodLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             } else {
               return const Center(
-                child: Text(
-                    "An error has occured..."
-                ),
+                child: Text("An error has occured..."),
               );
             }
           },

@@ -102,25 +102,25 @@ class DetailsScreen extends StatelessWidget {
                       children: [
                         MyMacroWidget(
                           title: 'Calories',
-                          value: food.macros.calories,
+                          value: food.macros.calories.toInt(),
                           icon: FontAwesomeIcons.fire,
                         ),
                         SizedBox(width: 10,),
                         MyMacroWidget(
                           title: 'Protein',
-                          value: food.macros.proteins,
+                          value: food.macros.proteins.toInt(),
                           icon: FontAwesomeIcons.dumbbell,
                         ),
                         SizedBox(width: 10,),
                         MyMacroWidget(
                           title: 'Fat',
-                          value: food.macros.fat,
+                          value: food.macros.fat.toInt(),
                           icon: FontAwesomeIcons.oilWell,
                         ),
                         SizedBox(width: 10,),
                         MyMacroWidget(
                           title: 'Carbs',
-                          value: food.macros.carbs,
+                          value: food.macros.carbs.toInt(),
                           icon: FontAwesomeIcons.breadSlice,
                         ),
                       ],

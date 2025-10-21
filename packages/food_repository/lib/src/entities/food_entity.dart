@@ -9,8 +9,8 @@ class FoodEntity {
   int spicy;
   String name;
   String description;
-  int price;
-  int discount;
+  num price;
+  num discount;
   Macros macros;
 
   FoodEntity({

@@ -1,10 +1,10 @@
 import '../entities/macros_entity.dart';
 
 class Macros {
-  int calories;
-  int proteins;
-  int fat;
-  int carbs;
+  num calories;
+  num proteins;
+  num fat;
+  num carbs;
 
   Macros({
     required this.calories,
