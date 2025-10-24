@@ -81,11 +81,14 @@ class HomeScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_outline),
               tooltip: 'Thêm món ăn mới',
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const AddFoodScreen()),
                 );
+                if (result == true) {
+                  context.read<GetFoodBloc>().add(GetFood());
+                }
               },
             ),
         ],

@@ -56,7 +56,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);
+        Navigator.pop(context, true); // ✅ gửi kết quả về HomeScreen
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
