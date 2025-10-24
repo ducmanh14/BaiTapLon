@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../components/my_text_field.dart';
 import '../blocs/sing_in_bloc/sign_in_bloc.dart';
+import 'forgot_password_screen.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -82,6 +84,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                     return null;
                   },
+
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -98,6 +101,27 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Forgot Password Button
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                    );
+                  },
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+
               !signInRequired
                   ? SizedBox(
                 width: MediaQuery.of(context).size.width * 0.5,
